@@ -17,9 +17,6 @@ import default_hyperparameters as dhp
 
 import copy
 
-import pydevd_pycharm
-
-
 parser = argparse.ArgumentParser()
 parser.add_argument("--schedule", default="main", type=str)
 parser.add_argument("--start", default=0, type=int)
@@ -144,5 +141,4 @@ def print_model(device):
 
 
 if __name__ == "__main__":
-  pydevd_pycharm.settrace('10.108.11.149', port=12346, stdoutToServer=True, stderrToServer=True)
   run_experiments(experiments)
