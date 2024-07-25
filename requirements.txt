@@ -5,4 +5,4 @@ torchaudio==2.1.0
 chardet==5.2.0
 numpy==1.26.0
 matplotlib==3.7.2
-
+pydevd-pycharm~=241.18034.82
