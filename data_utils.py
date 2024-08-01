@@ -230,7 +230,9 @@ def get_default_data_transforms(name, train=True, verbose=True):
 
 
 def get_data_loaders(hp, verbose=True):
-  
+
+  # retrieves the corresponding function object from the global scope using the globals() dictionary.
+  # this invoke func: get_mnist()
   x_train, y_train, x_test, y_test = globals()['get_'+hp['dataset']]()
 
   if verbose:
