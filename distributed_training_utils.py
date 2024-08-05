@@ -197,7 +197,7 @@ class Server(DistributedTrainingDevice):
     self.n_params = sum([T.numel() for T in self.W.values()])
     self.bits_sent = []
 
-    self.client_sizes = torch.Tensor(stats["split"]).cuda()
+    self.client_sizes = torch.Tensor(stats["split"]).to(device)
 
 
 
