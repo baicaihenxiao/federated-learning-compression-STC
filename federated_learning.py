@@ -169,4 +169,6 @@ def print_model(device):
 
 
 if __name__ == "__main__":
+  start_time = time.time()
   run_experiments(experiments)
+  print("--- %s seconds ---" % (time.time() - start_time))
