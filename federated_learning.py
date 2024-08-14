@@ -170,5 +170,7 @@ def print_model(device):
 
 if __name__ == "__main__":
   start_time = time.time()
+  print(f'--- Begin - {time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(start_time))} ---')
   run_experiments(experiments)
+  print(f'--- End - {time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time()))} ---') # 2024-01-13 11:19:31 CST
   print("--- %s seconds ---" % (time.time() - start_time))
