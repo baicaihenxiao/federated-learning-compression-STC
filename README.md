@@ -21,6 +21,35 @@ You can specify:
 - `"dataset"` : Choose from `["mnist", "cifar10", "kws", "fashionmnist"]`
 - `"net"` : Choose from `["logistic", "lstm", "cnn", "vgg11", "vgg11s"]`
 
+* -> See `default_hyperparameters.py`
+
+net:
+
+```python
+hp_net_dict = {
+
+  'logistic': 
+          {'type' : 'CNN', 'lr' : 0.04, 'batch_size' : 100, 'lr_decay' : ['LambdaLR', {'lr_lambda' : lambda epoch: 1.0}], 
+          'iterations' : 36000, 'momentum' : 0.0, 'lr_decay' : ['LambdaLR', {'lr_lambda' : lambda epoch: 1.0}]},
+
+  'cnn': 
+          {'type' : 'CNN', 'lr' : 0.1, 'batch_size' : 200, 'weight_decay' : 0.0, 'optimizer' : 'SGD', 'momentum' : 0.0,
+          'lr_decay' : ['LambdaLR', {'lr_lambda' : lambda epoch: 1.0}], 'iterations' : 8000},
+
+  'lstm': 
+          {'type' : 'CNN', 'lr' : 0.1, 'momentum' : 0.9, 'batch_size' : 200, 'weight_decay' : 0.0, 'optimizer' : 'SGD',
+          'lr_decay' : ['LambdaLR', {'lr_lambda' : lambda epoch: 1.0}], 'iterations' : 8000},
+
+  'vgg11s': 
+          {'type' : 'CNN', 'lr' : 0.016, 'batch_size' : 200, 'weight_decay' : 5e-5, "momentum" : 0.9,
+          'lr_decay' : ['LambdaLR', {'lr_lambda' : lambda epoch: 1.0}], 'iterations' : 36000},
+
+  'vgg11': 
+          {'type' : 'CNN', 'lr' : 0.05, 'momentum' : 0.9, 'batch_size' : 200, 'weight_decay' : 5e-4,
+          'lr_decay' : ['LambdaLR', {'lr_lambda' : lambda epoch: 0.99**epoch}], 'iterations' : 36000},
+}
+```
+
 ### Federated Learning Environment
 
 - `"n_clients"` : Number of Clients
@@ -33,7 +62,46 @@ You can specify:
 
 ### Compression Method
 
-- `"compression"` : Choose from `[["none", {}], ["fedavg", {"n" : ?}], ["signsgd", {"lr" : ?}], ["stc_updown", [{"p_up" : ?, "p_down" : ?}]], ["stc_up", {"p_up" : ?}], ["dgc_updown", [{"p_up" : ?, "p_down" : ?}]], ["dgc_up", {"p_up" : ?}] ]`
+- `"compression"` : Choose from `[["none", {}], ["fed_avg", {"n" : ?}], ["signsgd", {"lr" : ?}], ["stc_updown", [{"p_up" : ?, "p_down" : ?}]], ["stc_up", {"p_up" : ?}], ["dgc_updown", [{"p_up" : ?, "p_down" : ?}]], ["dgc_up", {"p_up" : ?}] ]`
+
+* -> See `default_hyperparameters.py`
+
+Compression method:
+
+```
+def get_hp_compression(compression):
+
+  c = compression[0]
+  hp = compression[1]
+
+  if c ==  "none" : 
+    return  {"compression_up" : ["none", {}], "compression_down" : ["none", {}],
+               "accumulation_up" : False, "accumulation_down" : False,  "aggregation" : "mean"}
+
+  if c ==  "signsgd" : 
+    return  {"compression_up" : ["signsgd", {}], "compression_down" : ["none", {}],
+               "accumulation_up" : False, "accumulation_down" : False,  "aggregation" : "majority", "lr" : hp["lr"], "local_iterations" : 1}
+
+  if c ==  "dgc_up" : 
+    return  {"compression_up" : ["dgc", {"p" : hp["p_up"]}], "compression_down" : ["none", {}],
+               "accumulation_up" : True, "accumulation_down" : False,  "aggregation" : "mean"}
+
+  if c ==  "stc_up" : 
+    return  {"compression_up" : ["stc", {"p" : hp["p_up"]}], "compression_down" : ["none", {}],
+               "accumulation_up" : True, "accumulation_down" : False,  "aggregation" : "mean"}
+
+  if c ==  "dgc_updown" : 
+    return  {"compression_up" : ["dgc", {"p" : hp["p_up"]}], "compression_down" : ["dgc", {"p" : hp["p_down"]}],
+               "accumulation_up" : True, "accumulation_down" : True,  "aggregation" : "mean"}    
+
+  if c ==  "stc_updown" : 
+    return {"compression_up" : ["stc", {"p" : hp["p_up"]}], "compression_down" : ["stc", {"p" : hp["p_down"]}],
+               "accumulation_up" : True, "accumulation_down" : True,  "aggregation" : "mean"}
+
+  if c ==  "fed_avg" : 
+    return {"compression_up" : ["none", {}], "compression_down" : ["none", {}],
+               "accumulation_up" : False, "accumulation_down" : False,  "aggregation" : "weighted_mean", "local_iterations" : hp["n"]}
+```
 
 ### Logging 
 - `"log_frequency"` : Number of communication rounds after which results are logged and saved to disk

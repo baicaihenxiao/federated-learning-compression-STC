@@ -11,7 +11,7 @@
         2000
       ],
       "n_clients": [
-        2000
+        100
       ],
       "participation_rate": [
         0.5
@@ -28,12 +28,10 @@
       "momentum": [
         0.9
       ],
-      "compression": [
-        [
-          "none",
-          {}
-        ]
-      ],
+      "_1compression": [["none", {}]],
+      "_2compression": [["stc_updown", {"p_up" : 0.0025, "p_down" : 0.0025}]],
+      "_3compression": [["signsgd", {"lr" : 0.04}]],
+      "compression": [["fed_avg", {"n" : 100}]],
       "log_frequency": [
         30
       ],
